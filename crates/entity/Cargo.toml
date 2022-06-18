@@ -1,0 +1,17 @@
+[package]
+name = "entity"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+sea-orm = { version = "0.8", features = [ "sqlx-sqlite", "runtime-tokio-native-tls"] }
+
+serde = { version = "1", features = [ "derive" ] }
+
+chrono = { version = "0.4", features = ["serde"] }
+# md5
+md5 = { version = "0.7" }
+
+uuid = { version = "0.8", features = [ "serde", "v4" ] }
