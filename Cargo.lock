@@ -274,6 +274,9 @@ dependencies = [
 [[package]]
 name = "error-code"
 version = "0.1.0"
+dependencies = [
+ "thiserror",
+]
 
 [[package]]
 name = "event-listener"
@@ -881,6 +884,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c54b25569025b7fc9651de43004ae593a75ad88543b17178aa5e1b9c4f15f56f"
 dependencies = [
  "unicode-ident",
+]
+
+[[package]]
+name = "property"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "entity",
+ "error-code",
+ "sea-orm",
+ "serde",
 ]
 
 [[package]]

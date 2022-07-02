@@ -1,0 +1,26 @@
+[package]
+name = "property"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[dependencies.serde]
+version = "1"
+features = [ "derive" ]
+
+[dependencies.chrono]
+version = "0.4"
+ features = ["serde"] 
+
+[dependencies.sea-orm]
+version = "0.8"
+features = [ "sqlx-sqlite", "runtime-tokio-native-tls"]
+
+[dependencies.entity]
+path = "../entity"
+
+[dependencies.error-code]
+path = "../error-code"
