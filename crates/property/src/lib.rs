@@ -1,14 +1,15 @@
-use entity::user::Model;
-use sea_orm::DatabaseConnection;
-use serde::{Deserialize, Serialize};
+pub mod account;
+pub mod budget;
+
+use entity::DBConnection;
 
 pub struct App {
     settingPath: Option<String>,
-    connection: DatabaseConnection,
+    pub connection: DBConnection,
 }
 
 impl App {
-    pub fn new(connection: DatabaseConnection) -> App {
+    pub fn new(connection: DBConnection) -> App {
         App {
             connection: connection,
             settingPath: None,

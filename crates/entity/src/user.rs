@@ -36,9 +36,17 @@ pub enum Relation {}
 impl ActiveModelBehavior for ActiveModel {}
 
 pub struct FindUser(i32);
+
+impl FindUser {
+    pub fn new(uid: i32) -> FindUser {
+        FindUser(uid)
+    }
+}
+
 impl FindUser {
     pub async fn execute(self, db: &DBConnection) -> Result<Option<Model>> {
-        Entity::find_by_id(self.0).one(db).await
+        let result = Entity::find_by_id(self.0).one(db).await?;
+        return Ok(result);
     }
 }
 
@@ -52,7 +60,25 @@ pub struct InsertUser {
 }
 
 impl InsertUser {
-    pub async fn create_user(self, db: &DBConnection) -> Result<Model> {
+    pub fn new(
+        identifier: String,
+        name: String,
+        gender: Option<Gender>,
+        email: Option<String>,
+        phone: Option<String>,
+        icon: Option<String>,
+    ) -> Self {
+        Self {
+            identifier,
+            name,
+            gender,
+            email,
+            phone,
+            icon,
+        }
+    }
+
+    pub async fn execute(self, db: &DBConnection) -> Result<Model> {
         let mut user: ActiveModel = Default::default();
         user.set(Column::Identifier, self.identifier.into());
         user.set(Column::Name, self.name.into());
@@ -68,7 +94,8 @@ impl InsertUser {
         if let Some(icon) = self.icon {
             user.set(Column::Icon, icon.into());
         }
-        user.insert(db).await
+        let u = user.insert(db).await?;
+        return Ok(u);
     }
 }
 
@@ -81,7 +108,23 @@ pub struct UpdateUser {
 }
 
 impl UpdateUser {
-    pub async fn update_user(self, origin: Model, db: &DBConnection) -> Result<Model> {
+    pub fn new(
+        name: Option<String>,
+        sex: Option<Gender>,
+        email: Option<String>,
+        phone: Option<String>,
+        icon: Option<String>,
+    ) -> Self {
+        Self {
+            name,
+            sex,
+            email,
+            phone,
+            icon,
+        }
+    }
+
+    pub async fn execute(self, origin: Model, db: &DBConnection) -> Result<Model> {
         let mut updated: ActiveModel = origin.clone().into();
         if let Some(name) = self.name {
             updated.name = ActiveValue::set(name)
@@ -99,15 +142,45 @@ impl UpdateUser {
             updated.phone = ActiveValue::set(value.into())
         }
 
-        updated.update(db).await
+        let u = updated.update(db).await?;
+        return Ok(u);
     }
 }
 
 pub struct CancellationUser(i32);
 
 impl CancellationUser {
-    async fn cancellation_user(self, db: &DBConnection) -> Result<bool> {
+    pub fn new(uid: i32) -> Self {
+        Self(uid)
+    }
+}
+
+impl CancellationUser {
+    pub async fn execute(self, db: &DBConnection) -> Result<bool> {
         let removed = Entity::delete_by_id(self.0).exec(db).await?;
         return Ok(removed.rows_affected > 0);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use sea_orm::{entity::prelude::*, entity::*, tests_cfg::*};
+
+    use crate::EntityError;
+
+    use super::InsertUser;
+
+    use tokio_test;
+
+    async fn test_insert_user() -> Result<(), EntityError> {
+        let insert = InsertUser::new(
+            "12312321312312312".to_string(),
+            "Test".to_string(),
+            None,
+            None,
+            None,
+            None,
+        );
+        return Ok(());
     }
 }

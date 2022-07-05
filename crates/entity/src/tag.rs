@@ -36,15 +36,25 @@ pub struct InsertTag {
     pub remark: Option<String>,
 }
 
-pub async fn create_tag(insert: InsertTag, db: &DBConnection) -> Result<Model> {
-    let mut tag: ActiveModel = Default::default();
-    tag.title = ActiveValue::set(insert.title);
-    tag.desc = ActiveValue::set(insert.desc);
-    tag.remark = ActiveValue::set(insert.remark);
-    tag.insert(db).await
+impl InsertTag {
+    pub async fn execute(self, db: &DBConnection) -> Result<Model> {
+        let mut tag: ActiveModel = Default::default();
+        tag.title = ActiveValue::set(self.title);
+        tag.desc = ActiveValue::set(self.desc);
+        tag.remark = ActiveValue::set(self.remark);
+        let t = tag.insert(db).await?;
+        return Ok(t);
+    }
 }
 
-pub async fn remove_tag(_id: i32, db: &DBConnection) -> Result<bool> {
-    let result = Entity::delete_by_id(_id).exec(db).await?;
-    return Ok(result.rows_affected > 0);
+pub struct RemoveTag(i32);
+
+impl RemoveTag {
+    pub async fn execute(self, db: &DBConnection) -> Result<bool> {
+        let result = Entity::delete_by_id(self.0).exec(db).await?;
+        return Ok(result.rows_affected > 0);
+    }
 }
+
+#[cfg(test)]
+mod test {}

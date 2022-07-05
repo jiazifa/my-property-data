@@ -46,7 +46,8 @@ impl InsertBudget {
         insert.remark = ActiveValue::set(self.remark);
         insert.limit_start_time = ActiveValue::set(self.limit_start_time);
         insert.limit_end_time = ActiveValue::set(self.limit_end_time);
-        insert.insert(db).await
+        let newElement = insert.insert(db).await?;
+        return Ok(newElement);
     }
 }
 
@@ -76,11 +77,18 @@ impl UpdateBudget {
         if let Some(value) = self.limit_end_time {
             updated.limit_start_time = ActiveValue::set(value);
         }
-        updated.update(db).await
+        let newElement = updated.update(db).await?;
+        return Ok(newElement);
     }
 }
 
 pub struct RemoveBudget(i32);
+
+impl RemoveBudget {
+    pub fn new(uid: i32) -> Self {
+        Self(uid)
+    }
+}
 
 impl RemoveBudget {
     pub async fn execute(self, db: &DBConnection) -> Result<bool> {
