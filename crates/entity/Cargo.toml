@@ -16,5 +16,8 @@ md5 = { version = "0.7" }
 
 thiserror = "~1.0"
 
+[dependencies.error-code]
+path = "../error-code"
+
 [dev-dependencies.tokio-test]
 version = "*"

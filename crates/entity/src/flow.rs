@@ -47,8 +47,8 @@ impl InsertFlow {
         element.budget_id = ActiveValue::set(self.budget_id);
         element.remark = ActiveValue::set(self.remark);
         element.create_at = ActiveValue::set(self.create_at);
-        let newElement = element.insert(db).await?;
-        return Ok(newElement);
+        let new_element = element.insert(db).await?;
+        return Ok(new_element);
     }
 }
 
@@ -66,7 +66,11 @@ impl UpdateFlow {
     pub async fn execute(self, db: &DBConnection) -> Result<Model> {
         let origin = match Entity::find_by_id(self.id).one(db).await? {
             Some(e) => e,
-            None => return Err(EntityError::RecordNotFound("Flow".to_owned())),
+            None => {
+                return Err(EntityError::DbError(error_code::DBError::RecordNotFound(
+                    "Flow".to_owned(),
+                )))
+            }
         };
         let mut element: ActiveModel = origin.into();
         element.title = ActiveValue::set(self.title);
@@ -74,8 +78,8 @@ impl UpdateFlow {
         element.budget_id = ActiveValue::set(self.budget_id);
         element.remark = ActiveValue::set(self.remark);
         element.create_at = ActiveValue::set(self.create_at);
-        let newElement = element.insert(db).await?;
-        return Ok(newElement);
+        let new_element = element.insert(db).await?;
+        return Ok(new_element);
     }
 }
 

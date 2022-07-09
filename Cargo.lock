@@ -265,6 +265,7 @@ name = "entity"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "error-code",
  "md5",
  "sea-orm",
  "serde",

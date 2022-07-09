@@ -4,6 +4,9 @@ use thiserror::Error;
 pub enum ErrorCode {
     #[error("Error when execute sql:: {0}")]
     DatabaseError(DBError),
+
+    #[error("Auth Error: {0}")]
+    AuthError(Auth),
 }
 
 #[derive(Debug, Error)]
@@ -16,4 +19,13 @@ pub enum DBError {
 
     #[error("Record Not Found: {0}")]
     RecordNotFound(String),
+
+    #[error("Other Unknown: {0}")]
+    Unknown(String),
+}
+
+#[derive(Debug, Error)]
+pub enum Auth {
+    #[error("{0} is not found")]
+    NotFount(String),
 }

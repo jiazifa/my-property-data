@@ -35,17 +35,37 @@ pub enum Relation {}
 
 impl ActiveModelBehavior for ActiveModel {}
 
-pub struct FindUser(i32);
+pub struct FindUserById(i32);
 
-impl FindUser {
-    pub fn new(uid: i32) -> FindUser {
-        FindUser(uid)
+impl FindUserById {
+    pub fn new(uid: i32) -> FindUserById {
+        FindUserById(uid)
     }
 }
 
-impl FindUser {
+impl FindUserById {
     pub async fn execute(self, db: &DBConnection) -> Result<Option<Model>> {
         let result = Entity::find_by_id(self.0).one(db).await?;
+        return Ok(result);
+    }
+}
+
+pub struct FindUserByName {
+    name: String,
+}
+
+impl FindUserByName {
+    pub fn new(name: String) -> Self {
+        Self { name }
+    }
+}
+
+impl FindUserByName {
+    pub async fn execute(self, db: &DBConnection) -> Result<Option<Model>> {
+        let result = Entity::find()
+            .filter(Column::Name.eq(self.name))
+            .one(db)
+            .await?;
         return Ok(result);
     }
 }
