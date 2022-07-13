@@ -28,3 +28,6 @@ features = [ "serde", "v4" ]
 
 [dependencies.error-code]
 path = "../error-code"
+
+[dependencies.migration]
+path = "../migrations"

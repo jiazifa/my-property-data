@@ -1,3 +1,4 @@
+use migration::{Migrator, MigratorTrait};
 use thiserror::Error;
 
 pub mod account;
@@ -34,11 +35,11 @@ pub struct App {
 
 impl App {
     pub fn new(connection: DBConnection) -> App {
-        App {
+        return App {
             connection: connection,
             settingPath: None,
             account: None,
-        }
+        };
     }
 }
 
@@ -54,5 +55,9 @@ impl App {
         let coordinator = AccountCoordinator::new(user);
         self.account = Some(coordinator);
         return Ok(true);
+    }
+
+    pub async fn update_migrator(db: &DBConnection) {
+        _ = Migrator::up(db, None).await;
     }
 }

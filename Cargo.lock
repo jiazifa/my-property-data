@@ -1208,6 +1208,7 @@ dependencies = [
  "chrono",
  "entity",
  "error-code",
+ "migration",
  "serde",
  "thiserror",
  "uuid",
