@@ -8,7 +8,7 @@ use crate::{ErrorType, PropertyError};
 
 #[derive(Debug)]
 pub struct AccountCoordinator {
-    user: Model,
+    pub user: Model,
 }
 
 impl AccountCoordinator {

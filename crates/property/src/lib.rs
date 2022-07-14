@@ -8,6 +8,9 @@ pub mod flow;
 use account::AccountCoordinator;
 use entity::{DBConnection, EntityError};
 
+pub type ErrorType = PropertyError;
+type Result<T> = std::result::Result<T, ErrorType>;
+
 #[derive(Debug, Error)]
 pub enum PropertyError {
     #[error("Found DbError: {0}")]
@@ -15,6 +18,9 @@ pub enum PropertyError {
 
     #[error("Auth Error: {0}")]
     AuthError(error_code::Auth),
+
+    #[error("Not Found: {0}")]
+    NotFound(String),
 }
 
 impl From<EntityError> for PropertyError {
@@ -25,26 +31,25 @@ impl From<EntityError> for PropertyError {
     }
 }
 
-pub type ErrorType = PropertyError;
-
-pub struct App {
-    settingPath: Option<String>,
-    pub connection: DBConnection,
+pub struct App<'a> {
+    setting_path: Option<String>,
+    pub connection: &'a DBConnection,
     pub account: Option<AccountCoordinator>,
 }
 
-impl App {
-    pub fn new(connection: DBConnection) -> App {
+impl App<'_> {
+    pub fn new(connection: &DBConnection, setting_path: Option<String>) -> App {
         return App {
             connection: connection,
-            settingPath: None,
+            setting_path,
             account: None,
         };
     }
 }
 
-impl App {
-    pub async fn login(&mut self, name: String) -> Result<bool, ErrorType> {
+// user
+impl App<'_> {
+    pub async fn login(&mut self, name: String) -> Result<bool> {
         let user = entity::user::FindUserByName::new(name.clone())
             .execute(&self.connection)
             .await?;
@@ -57,7 +62,29 @@ impl App {
         return Ok(true);
     }
 
-    pub async fn update_migrator(db: &DBConnection) {
-        _ = Migrator::up(db, None).await;
+    pub async fn update_migrator(&self) {
+        _ = Migrator::up(&self.connection, None).await;
+    }
+}
+
+#[cfg(test)]
+pub struct TestApp {
+    setting_path: Option<String>,
+    pub connection: DBConnection,
+    pub account: Option<AccountCoordinator>,
+}
+
+#[cfg(test)]
+impl TestApp {
+    pub fn new(
+        setting_path: Option<String>,
+        connection: DBConnection,
+        account: Option<AccountCoordinator>,
+    ) -> Self {
+        Self {
+            setting_path,
+            connection,
+            account,
+        }
     }
 }

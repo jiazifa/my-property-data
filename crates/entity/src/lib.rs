@@ -6,6 +6,8 @@ pub mod user;
 use thiserror::Error;
 
 pub use sea_orm::Database;
+pub use sea_orm::DatabaseBackend;
+
 pub type DBConnection = sea_orm::DatabaseConnection;
 pub type ErrorType = EntityError;
 pub type Result<T> = std::result::Result<T, ErrorType>;

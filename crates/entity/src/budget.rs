@@ -39,6 +39,22 @@ pub struct InsertBudget {
 }
 
 impl InsertBudget {
+    pub fn new(
+        title: String,
+        moneny: i32,
+        remark: Option<String>,
+        limit_end_time: DateTimeLocal,
+        limit_start_time: DateTimeLocal,
+    ) -> Self {
+        Self {
+            title,
+            moneny,
+            remark,
+            limit_end_time,
+            limit_start_time,
+        }
+    }
+
     pub async fn execute(self, db: &DBConnection) -> Result<Model> {
         let mut insert: ActiveModel = Default::default();
         insert.title = ActiveValue::set(self.title);
@@ -60,6 +76,22 @@ pub struct UpdateBudget {
 }
 
 impl UpdateBudget {
+    pub fn new(
+        title: Option<String>,
+        moneny: Option<i32>,
+        remark: Option<String>,
+        limit_end_time: Option<DateTimeLocal>,
+        limit_start_time: Option<DateTimeLocal>,
+    ) -> Self {
+        Self {
+            title,
+            moneny,
+            remark,
+            limit_end_time,
+            limit_start_time,
+        }
+    }
+
     pub async fn execute(self, origin: Model, db: &DBConnection) -> Result<Model> {
         let mut updated: ActiveModel = origin.into();
         if let Some(title) = self.title {
@@ -77,8 +109,22 @@ impl UpdateBudget {
         if let Some(value) = self.limit_end_time {
             updated.limit_start_time = ActiveValue::set(value);
         }
-        let newElement = updated.update(db).await?;
-        return Ok(newElement);
+        let new_element = updated.update(db).await?;
+        return Ok(new_element);
+    }
+}
+
+pub struct FindBudget(i32);
+
+impl FindBudget {
+    pub fn new(uid: i32) -> Self {
+        Self(uid)
+    }
+}
+impl FindBudget {
+    pub async fn execute(self, db: &DBConnection) -> Result<Option<Model>> {
+        let budget = Entity::find_by_id(self.0).one(db).await?;
+        return Ok(budget);
     }
 }
 
