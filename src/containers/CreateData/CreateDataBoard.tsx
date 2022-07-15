@@ -28,6 +28,7 @@ const GridSectionBuilder = (items: Array<CreateDataItem>, onClickAction: (item: 
                 justifyContent="flex-start"
                 alignItems="stretch"
                 direction="row"
+                rowSpacing={1}
                 spacing={{ xs: 2, md: 3 }}
                 columns={{ xs: 4, sm: 8, md: 12 }}>
 
