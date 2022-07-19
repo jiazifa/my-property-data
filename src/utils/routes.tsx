@@ -1,4 +1,4 @@
-import { AddBox, Dashboard } from "@mui/icons-material";
+import { AddBox, Dashboard, People } from "@mui/icons-material";
 import React from "react";
 
 export declare interface IMenu {
@@ -24,6 +24,12 @@ const menus: Array<IMenu> = [
     title: "录入数据",
     path: "createHealthDataBoard",
     icon: <AddBox />,
+  },
+  {
+    key: "account",
+    title: "用户管理",
+    path: "account",
+    icon: <People />,
   },
 ];
 

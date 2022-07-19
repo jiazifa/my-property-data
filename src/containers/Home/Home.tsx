@@ -5,6 +5,7 @@ import { HomeSider } from "./HomeSider";
 import { HomeBar } from "./HomeBar";
 import DashBoard from "../DashBoard";
 import { CreateDataBoard } from "../CreateData";
+import { AccountBoard } from "../Account";
 
 const mdTheme = createTheme();
 
@@ -24,8 +25,9 @@ const Home = () => {
                 }}>
                     <Toolbar />
                     <Routes>
-                        <Route path="dashboard" element={<DashBoard />} />
-                        <Route path="createHealthDataBoard" element={<CreateDataBoard />} />
+                        <Route path="dashboard/" element={<DashBoard />} />
+                        <Route path="createHealthDataBoard/" element={<CreateDataBoard />} />
+                        <Route path="account/" element={< AccountBoard />} />
                     </Routes>
                 </Box>
             </Box>

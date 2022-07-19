@@ -1,7 +1,10 @@
 import { Box, Card, CardActionArea, CardContent, CardHeader, createTheme, Grid, ThemeProvider, Typography } from "@mui/material";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { BootstrapDialogComp } from "../../components/Dialog";
-import { CreateAccountFormDialog } from './Account';
+import { CreateAccountFormDialog } from '../Account/Account';
+import { CreateBudgetFormDialog } from "./Budget";
+import { CreateFlowFormDialog } from "./Flow";
+import { CreateTagFormDialog } from "./Tag";
 
 const theme = createTheme();
 
@@ -9,6 +12,7 @@ declare interface CreateDataItem {
     identifier: string;
     title: string;
     subheader?: string;
+    child: React.ReactNode,
 
 }
 
@@ -17,6 +21,25 @@ const createDataList: Array<CreateDataItem> = [
         identifier: "account",
         title: "成员",
         subheader: "zhelishi ceshi",
+        child: <CreateAccountFormDialog />
+    },
+    {
+        identifier: "budget",
+        title: "预算",
+        subheader: "zhelishi ceshi",
+        child: <CreateBudgetFormDialog />,
+    },
+    {
+        identifier: "flow",
+        title: "流水",
+        subheader: "zhelishi ceshi",
+        child: <CreateFlowFormDialog />,
+    },
+    {
+        identifier: "tag",
+        title: "标签",
+        subheader: "zhelishi ceshi",
+        child: <CreateTagFormDialog />,
     },
 ];
 
@@ -34,7 +57,7 @@ const GridSectionBuilder = (items: Array<CreateDataItem>, onClickAction: (item: 
 
                 {items.map((i) => {
                     return (
-                        <Grid item xs={4} >
+                        <Grid item xs={4} key={i.identifier}>
                             <Card>
                                 <CardActionArea onClick={() => onClickAction(i)}>
                                     <CardHeader
@@ -63,15 +86,13 @@ function getActiveDialogIfCould(item: CreateDataItem | undefined, setKey: Dispat
     if (!item) {
         return null;
     }
-    if (item.identifier === "account") {
-        return (<BootstrapDialogComp
-            title={item.title}
-            open={true}
-            onClose={() => setKey("")}
-            children={<CreateAccountFormDialog />}
-        />)
-    }
-    return null;
+
+    return (<BootstrapDialogComp
+        title={item.title}
+        open={true}
+        onClose={() => setKey("")}
+        children={item.child}
+    />)
 }
 
 function CreateDataBoard() {
@@ -84,7 +105,6 @@ function CreateDataBoard() {
             {GridSectionBuilder(createDataList, (item) => { setActiveDialog(item.identifier) })}
             {targetNode}
         </ThemeProvider >
-
     )
 }
 
