@@ -1,4 +1,4 @@
-import { AddBox, Dashboard, People } from "@mui/icons-material";
+import { AddBox, Bookmark, Dashboard, MonetizationOnSharp, Money, People } from "@mui/icons-material";
 import React from "react";
 
 export declare interface IMenu {
@@ -20,16 +20,28 @@ const menus: Array<IMenu> = [
     comp: "Dashboard",
   },
   {
-    key: "add_data_board_key",
-    title: "录入数据",
-    path: "createHealthDataBoard",
-    icon: <AddBox />,
-  },
-  {
     key: "account",
     title: "用户管理",
     path: "account",
     icon: <People />,
+  },
+  {
+    key: "tag",
+    title: "标签管理",
+    path: "tag",
+    icon: <Bookmark />,
+  },
+  {
+    key: "budget",
+    title: "预算管理",
+    path: "budget",
+    icon: <Money />,
+  },
+  {
+    key: "flow",
+    title: "流水管理",
+    path: "flow",
+    icon: <MonetizationOnSharp />,
   },
 ];
 

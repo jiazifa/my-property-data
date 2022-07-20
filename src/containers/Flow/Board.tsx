@@ -2,32 +2,26 @@ import { Add, DeleteRounded, EditRounded } from "@mui/icons-material";
 import { Box, createTheme, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Toolbar } from "@mui/material";
 import React, { useState } from "react";
 import { BootstrapDialogComp } from "../../components/Dialog";
-import { CreateAccountFormDialog } from "./AddDialog";
+import { CreateFlowFormDialog } from "./AddFlow";
 
 const theme = createTheme();
 
 const rows: any[] = [
     {
         id: 1,
-        name: "测试1",
-        gender: 1,
-        email: "2333@qq.com",
-        phone: "18344445555",
+        title: "测试1",
+        desc: "描述",
     },
     {
         id: 2,
-        name: "测试1",
-        gender: 1,
-        email: "2333@qq.com",
-        phone: "182"
+        title: "测试1",
+        desc: "描述",
     },
     {
         id: 3,
-        name: "测试1",
-        gender: 1,
-        email: "2333@qq.com",
-        phone: "182"
-    }
+        title: "测试1",
+        desc: "描述",
+    },
 ];
 
 const removeAction = (item: any) => {
@@ -36,7 +30,7 @@ const removeAction = (item: any) => {
 
 const editAction = (item: any) => { };
 
-function AccountBoard() {
+function FlowBoard() {
 
     const [activeDialog, setActiveDialog] = useState<React.ReactNode>();
     return (
@@ -47,35 +41,35 @@ function AccountBoard() {
                         color="inherit"
                         onClick={() => setActiveDialog(
                             <BootstrapDialogComp
-                                title="添加成员"
+                                title="添加标签"
                                 open={true}
                                 onClose={() => setActiveDialog(null)}
-                                children={<CreateAccountFormDialog />}
+                                children={<CreateFlowFormDialog />}
                             />
                         )}>
                         <Add />
                     </IconButton>
                 </Toolbar>
                 <TableContainer component={Paper}>
-                    <Table aria-label="成员列表">
+                    <Table aria-label="标签列表">
                         <TableHead>
                             <TableRow>
                                 <TableCell>ID</TableCell>
-                                <TableCell>姓名</TableCell>
-                                <TableCell>性别</TableCell>
-                                <TableCell>电话</TableCell>
-                                <TableCell>邮箱</TableCell>
-                                <TableCell></TableCell>
+                                <TableCell>标题</TableCell>
+                                <TableCell>金额</TableCell>
+                                <TableCell>消耗预算</TableCell>
+                                <TableCell>使用人</TableCell>
+                                <TableCell>时间</TableCell>
+                                <TableCell>备注</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {rows.map((row) => (
                                 <TableRow key={row.id}>
                                     <TableCell>{row.id}</TableCell>
-                                    <TableCell>{row.name}</TableCell>
-                                    <TableCell>{row.gender}</TableCell>
-                                    <TableCell>{row.phone}</TableCell>
-                                    <TableCell>{row.email}</TableCell>
+                                    <TableCell>{row.title}</TableCell>
+                                    <TableCell>{row.desc}</TableCell>
+                                    <TableCell>{row.remark}</TableCell>
                                     <TableCell>
                                         <IconButton onClick={() => removeAction(row)}>
                                             <EditRounded />
@@ -96,4 +90,4 @@ function AccountBoard() {
     )
 }
 
-export { AccountBoard };
+export { FlowBoard };
