@@ -1,28 +1,47 @@
-import { Add, DeleteRounded, EditRounded } from "@mui/icons-material";
-import { Box, createTheme, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Toolbar } from "@mui/material";
-import React, { useState } from "react";
-import { BootstrapDialogComp } from "../../components/Dialog";
+import { IModalContentModel, useAppDispatch } from "../../reducers";
+import { setActiveModalContent } from "../../reducers/app";
 import { CreateTagFormDialog } from "./AddDialog";
-
-const theme = createTheme();
+// import { CreateTagFormDialog } from "./AddDialog";
 
 const rows: any[] = [
     {
         id: 1,
         title: "测试1",
         desc: "描述",
+        remark: "备注",
     },
     {
         id: 2,
         title: "测试1",
         desc: "描述",
+        remark: "备注",
     },
     {
         id: 3,
         title: "测试1",
-        desc: "描述",
+        desc: "描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述",
+        remark: "备注备注备注备注备注备注备注备注备注备注备注备注备注",
     },
 ];
+
+const header = [
+    {
+        title: "ID",
+        key: "ID"
+    },
+    {
+        key: "title",
+        title: "标题"
+    },
+    {
+        key: "desc",
+        title: "描述"
+    },
+    {
+        key: "remark",
+        title: "备注"
+    },
+]
 
 const removeAction = (item: any) => {
 
@@ -32,58 +51,42 @@ const editAction = (item: any) => { };
 
 function TagBoard() {
 
-    const [activeDialog, setActiveDialog] = useState<React.ReactNode>();
+    const dispatch = useAppDispatch();
+    const headerContainer = header.map((h) => (<th key={h.key}><abbr title={h.key}>{h.title}</abbr></th>));
+    const rowContainer = rows.map((r) => (
+        <tr
+            key={r.id}>
+            <th>{r.id}</th>
+            <td>{r.title}</td>
+            <td>{r.desc}</td>
+            <td>{r.remark}</td>
+        </tr>
+    ));
+    const addModal: IModalContentModel = {
+        content: <CreateTagFormDialog />
+    };
     return (
-        <ThemeProvider theme={theme}>
-            <Box width="100%" height="100%">
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        onClick={() => setActiveDialog(
-                            <BootstrapDialogComp
-                                title="添加标签"
-                                open={true}
-                                onClose={() => setActiveDialog(null)}
-                                children={<CreateTagFormDialog />}
-                            />
-                        )}>
-                        <Add />
-                    </IconButton>
-                </Toolbar>
-                <TableContainer component={Paper}>
-                    <Table aria-label="标签列表">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>ID</TableCell>
-                                <TableCell>标题</TableCell>
-                                <TableCell>描述</TableCell>
-                                <TableCell>备注</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rows.map((row) => (
-                                <TableRow key={row.id}>
-                                    <TableCell>{row.id}</TableCell>
-                                    <TableCell>{row.title}</TableCell>
-                                    <TableCell>{row.desc}</TableCell>
-                                    <TableCell>{row.remark}</TableCell>
-                                    <TableCell>
-                                        <IconButton onClick={() => removeAction(row)}>
-                                            <EditRounded />
-                                        </IconButton>
+        <div>
+            <div className="mt-4 container level is-max-desktop">
+                <div className="level-left"></div>
+                <div className="level-right">
+                    <button className="button" onClick={() => dispatch(setActiveModalContent(addModal))}>
+                        <span>添加</span>
+                    </button>
+                </div>
+            </div>
+            <table className="table container is-max-desktop">
+                <thead>
+                    <tr>
+                        {headerContainer}
+                    </tr>
+                </thead>
+                <tbody>
+                    {rowContainer}
+                </tbody>
+            </table>
 
-                                        <IconButton onClick={() => editAction(row)}>
-                                            <DeleteRounded />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Box>
-            {activeDialog}
-        </ThemeProvider>
+        </div>
     )
 }
 

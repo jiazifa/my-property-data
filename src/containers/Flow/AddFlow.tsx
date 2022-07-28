@@ -1,117 +1,78 @@
-import { Avatar, Box, Button, Container, createTheme, CssBaseline, Dialog, Select, MenuItem, TextField, ThemeProvider, FormControl, InputLabel } from "@mui/material"
-import moment from "moment";
+import React, { useState } from "react";
+import { useAppDispatch } from "../../reducers";
+import { setActiveModalContent } from "../../reducers/app";
 
-import React, { useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-const theme = createTheme();
-
-export interface CreateFlowFormCompProps {
-
-}
-
-const budgetModels = [
-    {
-        id: 1,
-        name: "11月"
-    },
-    {
-        id: 2,
-        name: "12月"
-    }
-]
-
-function CreateFlowFormComp(props: CreateFlowFormCompProps) {
-
-    const navigator = useNavigate();
-
-    const [title, setTitle] = useState<string>("");
-    const [date, setDate] = useState<Date>(new Date());
-    const [moneny, setMoneny] = useState(0);
-    const [remark, setRemark] = useState<string>("");
-    const [budgetId, setBudgetId] = useState<number>(1);
-
-    const BudgetSelectMenu: Array<React.ReactNode> = budgetModels
-        .map((model) => <MenuItem key={model.name} value={model.id}>{model.name}</MenuItem>);
-
-    const handleComfirm = useCallback((e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        let v = Number(title);
-        let time = date;
-    }, []);
-
-    const isValueError = !(title.length >= 0);
-    return (
-        <div>
-            <ThemeProvider theme={theme}>
-                <Container component='main' maxWidth="xs">
-                    <Box component='form' onSubmit={handleComfirm} sx={{ mt: 1 }}>
-
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="Flow.title.value"
-                            name="Flow.title.value"
-                            autoComplete="my-property-data.Flow.title.value"
-                            autoFocus
-                            label={"标题"}
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            variant={isValueError ? "filled" : "outlined"}
-                        />
-
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="Flow.moneny.value"
-                            name="Flow.moneny.value"
-                            autoComplete="my-property-data.Flow.moneny.value"
-                            autoFocus
-                            label={"金额"}
-                            value={moneny}
-                            onChange={(e) => setMoneny(+e.target.value)}
-                            variant={isValueError ? "filled" : "outlined"}
-                        />
-
-                        <TextField
-                            margin="normal"
-                            fullWidth
-                            id="Flow.remark.value"
-                            name="Flow.remark.value"
-                            autoComplete="my-property-data.Flow.remark.value"
-                            autoFocus
-                            label={"备注"}
-                            value={remark}
-                            onChange={(e) => setRemark(e.target.value)}
-                            variant={isValueError ? "filled" : "outlined"}
-                        />
-
-                        <FormControl fullWidth>
-                            <InputLabel id="flow.budget">消耗预算项</InputLabel>
-                            <Select
-                                labelId="flow.budget"
-                                id="flow.budget"
-                                value={budgetId}
-                                onChange={(e) => console.log(e.target.value)}
-                            >
-                                {BudgetSelectMenu}
-                            </Select>
-                        </FormControl>
-                        <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}> 添加 </Button>
-                    </Box>
-                </Container>
-            </ThemeProvider>
-
-        </div >
-    )
-}
 
 function CreateFlowFormDialog() {
+    const dispatch = useAppDispatch();
+    const [title, setTitle] = useState<string>("");
+    const [date, setDate] = useState<Date>(new Date());
+    const [money, setMoneny] = useState(0);
+    const [remark, setRemark] = useState<string>("");
+
+    const handleComfirm = () => {
+        var payload = {
+            title: title,
+            date: date,
+            moneny: money,
+            remark: remark
+        }
+        console.log(`${JSON.stringify(payload)}`);
+    };
+
     return (
-        <CreateFlowFormComp />
+        <div className="modal-card">
+            <header className="modal-card-head">
+                <p className="modal-card-title">添加流水</p>
+                <button className="delete" aria-label="close" onClick={() => dispatch(setActiveModalContent(undefined))}></button>
+            </header>
+            <section className="modal-card-body">
+                <div className="container">
+                    <div className="field">
+                        <label className="label">标题</label>
+                        <div className="control">
+                            <input type="text" className="input" placeholder="请输入标题" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        </div>
+                    </div>
+
+                    <div className="field">
+                        <label className="label">金额</label>
+                        <div className="control">
+                            <input type="text" className="input" placeholder="请输入金额" value={money} onChange={(e) => setMoneny(+e.target.value)} />
+                        </div>
+                    </div>
+                    <div className="field">
+                        <label className="label">消耗预算项</label>
+                        <div className="control">
+                            <input type="text" className="input" placeholder="消耗预算项" value={remark} onChange={(e) => setRemark(e.target.value)} />
+                        </div>
+                    </div>
+                    <div className="field">
+                        <label className="label">使用人</label>
+                        <div className="control">
+                            <input type="text" className="input" placeholder="使用人" value={remark} onChange={(e) => setRemark(e.target.value)} />
+                        </div>
+                    </div>
+                    <div className="field">
+                        <label className="label">时间</label>
+                        <div className="control">
+                            <input type="text" className="input" placeholder="时间" value={remark} onChange={(e) => setRemark(e.target.value)} />
+                        </div>
+                    </div>
+                    <div className="field">
+                        <label className="label">备注</label>
+                        <div className="control">
+                            <input type="text" className="input" placeholder="请输入备注" value={remark} onChange={(e) => setRemark(e.target.value)} />
+                        </div>
+                    </div>
+                </div >
+            </section>
+            <footer className="modal-card-foot">
+                <button className="button is-success" onClick={() => handleComfirm()}>添加</button>
+                <button className="button" type="reset" onClick={() => dispatch(setActiveModalContent(undefined))}>取消</button>
+            </footer>
+        </div>
     );
 }
 
-export { CreateFlowFormComp, CreateFlowFormDialog }
+export { CreateFlowFormDialog }

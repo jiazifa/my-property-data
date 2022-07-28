@@ -1,11 +1,29 @@
-import { Add, DeleteRounded, EditRounded } from "@mui/icons-material";
-import { Box, createTheme, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Toolbar } from "@mui/material";
-import React, { useState } from "react";
-import { BootstrapDialogComp } from "../../components/Dialog";
+import { IModalContentModel, useAppDispatch } from "../../reducers";
+import { setActiveModalContent } from "../../reducers/app";
 import { CreateAccountFormDialog } from "./AddDialog";
 
-const theme = createTheme();
-
+const header = [
+    {
+        title: "ID",
+        key: "ID"
+    },
+    {
+        key: "name",
+        title: "姓名"
+    },
+    {
+        key: "gender",
+        title: "性别"
+    },
+    {
+        key: "email",
+        title: "邮箱"
+    },
+    {
+        key: "phone",
+        title: "电话"
+    },
+]
 const rows: any[] = [
     {
         id: 1,
@@ -38,61 +56,42 @@ const editAction = (item: any) => { };
 
 function AccountBoard() {
 
-    const [activeDialog, setActiveDialog] = useState<React.ReactNode>();
+    const dispatch = useAppDispatch();
+    const headerContainer = header.map((h) => (<th key={h.key}><abbr title={h.key}>{h.title}</abbr></th>));
+    const rowContainer = rows.map((r) => (
+        <tr
+            key={r.id}>
+            <th>{r.id}</th>
+            <td>{r.title}</td>
+            <td>{r.desc}</td>
+            <td>{r.remark}</td>
+        </tr>
+    ));
+    const addModal: IModalContentModel = {
+        content: <CreateAccountFormDialog />
+    };
     return (
-        <ThemeProvider theme={theme}>
-            <Box width="100%" height="100%">
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        onClick={() => setActiveDialog(
-                            <BootstrapDialogComp
-                                title="添加成员"
-                                open={true}
-                                onClose={() => setActiveDialog(null)}
-                                children={<CreateAccountFormDialog />}
-                            />
-                        )}>
-                        <Add />
-                    </IconButton>
-                </Toolbar>
-                <TableContainer component={Paper}>
-                    <Table aria-label="成员列表">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>ID</TableCell>
-                                <TableCell>姓名</TableCell>
-                                <TableCell>性别</TableCell>
-                                <TableCell>电话</TableCell>
-                                <TableCell>邮箱</TableCell>
-                                <TableCell></TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rows.map((row) => (
-                                <TableRow key={row.id}>
-                                    <TableCell>{row.id}</TableCell>
-                                    <TableCell>{row.name}</TableCell>
-                                    <TableCell>{row.gender}</TableCell>
-                                    <TableCell>{row.phone}</TableCell>
-                                    <TableCell>{row.email}</TableCell>
-                                    <TableCell>
-                                        <IconButton onClick={() => removeAction(row)}>
-                                            <EditRounded />
-                                        </IconButton>
+        <div>
+            <div className="mt-4 container level is-max-desktop">
+                <div className="level-left"></div>
+                <div className="level-right">
+                    <button className="button" onClick={() => dispatch(setActiveModalContent(addModal))}>
+                        <span>添加</span>
+                    </button>
+                </div>
+            </div>
+            <table className="table container is-max-desktop">
+                <thead>
+                    <tr>
+                        {headerContainer}
+                    </tr>
+                </thead>
+                <tbody>
+                    {rowContainer}
+                </tbody>
+            </table>
 
-                                        <IconButton onClick={() => editAction(row)}>
-                                            <DeleteRounded />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Box>
-            {activeDialog}
-        </ThemeProvider>
+        </div>
     )
 }
 

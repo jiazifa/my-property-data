@@ -1,92 +1,60 @@
-import { Avatar, Box, Button, Container, createTheme, CssBaseline, Dialog, Select, MenuItem, TextField, ThemeProvider } from "@mui/material"
-import moment from "moment";
-
-import React, { useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-const theme = createTheme();
-
-export interface CreateBudgetFormCompProps {
-
-}
-
-function CreateBudgetFormComp(props: CreateBudgetFormCompProps) {
-
-    const navigator = useNavigate();
-
-    const [title, setTitle] = useState<string>("");
-    const [date, setDate] = useState<Date>(new Date());
-    const [moneny, setMoneny] = useState(0);
-    const [remark, setRemark] = useState<string>("");
-
-
-    const handleComfirm = useCallback((e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        let v = Number(title);
-        let time = date;
-    }, []);
-
-    const isValueError = !(title.length >= 0);
-    return (
-        <div>
-            <ThemeProvider theme={theme}>
-                <Container component='main' maxWidth="xs">
-                    <Box component='form' onSubmit={handleComfirm} sx={{ mt: 1 }}>
-
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="budget.title.value"
-                            name="budget.title.value"
-                            autoComplete="my-property-data.budget.title.value"
-                            autoFocus
-                            label={"标题"}
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            variant={isValueError ? "filled" : "outlined"}
-                        />
-
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="budget.moneny.value"
-                            name="budget.moneny.value"
-                            autoComplete="my-property-data.budget.moneny.value"
-                            autoFocus
-                            label={"金额"}
-                            value={moneny}
-                            onChange={(e) => setMoneny(+e.target.value)}
-                            variant={isValueError ? "filled" : "outlined"}
-                        />
-
-                        <TextField
-                            margin="normal"
-                            fullWidth
-                            id="budget.remark.value"
-                            name="budget.remark.value"
-                            autoComplete="my-property-data.budget.remark.value"
-                            autoFocus
-                            label={"备注"}
-                            value={remark}
-                            onChange={(e) => setRemark(e.target.value)}
-                            variant={isValueError ? "filled" : "outlined"}
-                        />
-
-                        <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}> 添加 </Button>
-                    </Box>
-                </Container>
-            </ThemeProvider>
-
-        </div >
-    )
-}
+import { useState } from "react";
+import { useAppDispatch } from "../../reducers";
+import { setActiveModalContent } from "../../reducers/app";
 
 function CreateBudgetFormDialog() {
+    const dispatch = useAppDispatch();
+    const [title, setTitle] = useState<string>("");
+    const [date, setDate] = useState<Date>(new Date());
+    const [money, setMoneny] = useState(0);
+    const [remark, setRemark] = useState<string>("");
+
+    const handleComfirm = () => {
+        var payload = {
+            title: title,
+            date: date,
+            moneny: money,
+            remark: remark
+        }
+        console.log(`${JSON.stringify(payload)}`);
+    };
+
     return (
-        <CreateBudgetFormComp />
+        <div className="modal-card">
+            <header className="modal-card-head">
+                <p className="modal-card-title">添加预算</p>
+                <button className="delete" aria-label="close" onClick={() => dispatch(setActiveModalContent(undefined))}></button>
+            </header>
+            <section className="modal-card-body">
+                <div className="container">
+                    <div className="field">
+                        <label className="label">标题</label>
+                        <div className="control">
+                            <input type="text" className="input" placeholder="请输入标题" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        </div>
+                    </div>
+
+                    <div className="field">
+                        <label className="label">金额</label>
+                        <div className="control">
+                            <input type="text" className="input" placeholder="请输入金额" value={money} onChange={(e) => setMoneny(+e.target.value)} />
+                        </div>
+                    </div>
+
+                    <div className="field">
+                        <label className="label">备注</label>
+                        <div className="control">
+                            <input type="text" className="input" placeholder="请输入备注" value={remark} onChange={(e) => setRemark(e.target.value)} />
+                        </div>
+                    </div>
+                </div >
+            </section>
+            <footer className="modal-card-foot">
+                <button className="button is-success" onClick={() => handleComfirm()}>添加</button>
+                <button className="button" type="reset" onClick={() => dispatch(setActiveModalContent(undefined))}>取消</button>
+            </footer>
+        </div>
     );
 }
 
-export { CreateBudgetFormComp, CreateBudgetFormDialog }
+export { CreateBudgetFormDialog }

@@ -1,4 +1,3 @@
-import { createTheme, Grid, Typography } from "@mui/material"
 import React from "react";
 import { Label, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
@@ -12,8 +11,6 @@ export declare interface LineCharData {
 }
 
 function LineChartComp(data: LineCharData) {
-
-    const theme = createTheme();
 
     const vs = data.values?.map((i) => { return { y: i[0], x: i[1] } })
     return (
@@ -30,22 +27,16 @@ function LineChartComp(data: LineCharData) {
                 >
                     <XAxis
                         dataKey="x"
-                        stroke={theme.palette.text.secondary}
-                        style={theme.typography.body2}
                     >
                         {data.xtitle}
                     </XAxis>
                     <YAxis
-                        stroke={theme.palette.text.secondary}
-                        style={theme.typography.body2}
                     >
                         <Label
                             angle={270}
                             position="left"
                             style={{
                                 textAnchor: 'middle',
-                                fill: theme.palette.text.primary,
-                                ...theme.typography.body1,
                             }}
                         >
                             {data.ytitle}
@@ -55,7 +46,6 @@ function LineChartComp(data: LineCharData) {
                         isAnimationActive={false}
                         type="monotone"
                         dataKey="y"
-                        stroke={theme.palette.primary.main}
                         dot={false}
                     />
                 </LineChart>

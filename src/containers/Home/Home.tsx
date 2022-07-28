@@ -1,41 +1,42 @@
-import React from "react";
+import { useRef } from "react";
 import { Route, Routes } from "react-router-dom";
-import { Box, createTheme, CssBaseline, ThemeProvider, Toolbar } from "@mui/material";
-import { HomeSider } from "./HomeSider";
-import { HomeBar } from "./HomeBar";
+import { Navigation } from "../../components/Navigation";
+import { useAppSelector } from "../../reducers";
+import { selectedActiveModalContent } from "../../reducers/app";
 import DashBoard from "../DashBoard";
 import { AccountBoard } from "../Account";
 import { TagBoard } from "../Tag";
 import { BudgetBoard } from "../Budget";
 import { FlowBoard } from "../Flow";
 
-const mdTheme = createTheme();
 
 const Home = () => {
+    const NavigationContainer = Navigation(true);
+    const domRef = useRef<HTMLInputElement>(null);
+    const modalContent = useAppSelector(selectedActiveModalContent);
+
+    if (modalContent === undefined) {
+        domRef.current?.classList.remove("is-active");
+    } else {
+        domRef.current?.classList.add("is-active");
+    }
     return (
-        <ThemeProvider theme={mdTheme}>
-            <Box display='flex'>
-                <CssBaseline />
-
-                <HomeBar />
-                <HomeSider />
-
-                <Box component="main" sx={{
-                    flexGrow: 1,
-                    height: '100vh',
-                    overflow: 'auto'
-                }}>
-                    <Toolbar />
-                    <Routes>
-                        <Route path="dashboard/" element={<DashBoard />} />
-                        <Route path="account/" element={< AccountBoard />} />
-                        <Route path="tag/" element={< TagBoard />} />
-                        <Route path="budget/" element={< BudgetBoard />} />
-                        <Route path="flow/" element={< FlowBoard />} />
-                    </Routes>
-                </Box>
-            </Box>
-        </ThemeProvider >
+        <div>
+            {NavigationContainer}
+            <Routes>
+                <Route path="dashboard/" element={<DashBoard />} />
+                <Route path="account/" element={< AccountBoard />} />
+                <Route path="tag/" element={< TagBoard />} />
+                <Route path="budget/" element={< BudgetBoard />} />
+                <Route path="flow/" element={< FlowBoard />} />
+            </Routes>
+            <div className={"modal"} ref={domRef}>
+                <div className="modal-background"></div>
+                <div>
+                    {modalContent?.content}
+                </div>
+            </div>
+        </div >
     )
 }
 

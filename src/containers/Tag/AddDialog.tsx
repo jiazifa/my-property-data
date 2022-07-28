@@ -1,92 +1,60 @@
-import { Avatar, Box, Button, Container, createTheme, CssBaseline, Dialog, Select, MenuItem, TextField, ThemeProvider } from "@mui/material"
-import moment from "moment";
-
 import React, { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../reducers";
+import { setActiveModalContent } from "../../reducers/app";
 
-const theme = createTheme();
-
-export interface CreateTagFormCompProps {
-
-}
-
-function CreateTagFormComp(props: CreateTagFormCompProps) {
-
-    const navigator = useNavigate();
-
-    const [title, setTitle] = useState<string>("");
-    const [date, setDate] = useState<Date>(new Date());
-    const [desc, setDesc] = useState<string>();
-    const [remark, setRemark] = useState<string>("");
-
-
-    const handleComfirm = useCallback((e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        let v = Number(title);
-        let time = date;
-    }, []);
-
-    const isValueError = !(title.length >= 0);
-    return (
-        <div>
-            <ThemeProvider theme={theme}>
-                <Container component='main' maxWidth="xs">
-                    <Box component='form' onSubmit={handleComfirm} sx={{ mt: 1 }}>
-
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="Tag.title.value"
-                            name="Tag.title.value"
-                            autoComplete="my-property-data.Tag.title.value"
-                            autoFocus
-                            label={"标题"}
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            variant={isValueError ? "filled" : "outlined"}
-                        />
-
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="Tag.desc.value"
-                            name="Tag.desc.value"
-                            autoComplete="my-property-data.Tag.desc.value"
-                            autoFocus
-                            label={"描述"}
-                            value={desc}
-                            onChange={(e) => setDesc(e.target.value)}
-                            variant={isValueError ? "filled" : "outlined"}
-                        />
-
-                        <TextField
-                            margin="normal"
-                            fullWidth
-                            id="Tag.remark.value"
-                            name="Tag.remark.value"
-                            autoComplete="my-property-data.Tag.remark.value"
-                            autoFocus
-                            label={"备注"}
-                            value={remark}
-                            onChange={(e) => setRemark(e.target.value)}
-                            variant={isValueError ? "filled" : "outlined"}
-                        />
-
-                        <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}> 添加 </Button>
-                    </Box>
-                </Container>
-            </ThemeProvider>
-
-        </div >
-    )
-}
 
 function CreateTagFormDialog() {
+    const dispatch = useAppDispatch();
+    const [title, setTitle] = useState<string>("");
+    const [date, _] = useState<Date>(new Date());
+    const [desc, setDesc] = useState<string>("");
+    const [remark, setRemark] = useState<string>("");
+
+    const handleComfirm = () => {
+        var payload = {
+            title: title,
+            desc: desc,
+            remark: remark
+        }
+        console.log(`${JSON.stringify(payload)}`);
+    };
+
     return (
-        <CreateTagFormComp />
+        <div className="modal-card">
+            <header className="modal-card-head">
+                <p className="modal-card-title">添加标签</p>
+                <button className="delete" aria-label="close" onClick={() => dispatch(setActiveModalContent(undefined))}></button>
+            </header>
+            <section className="modal-card-body">
+                <div className="container">
+                    <div className="field">
+                        <label className="label">标题</label>
+                        <div className="control">
+                            <input type="text" className="input" placeholder="请输入标题" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        </div>
+                    </div>
+                    <div className="field">
+                        <label className="label">描述</label>
+                        <div className="control">
+                            <input type="text" className="input" placeholder="请输入描述" value={desc} onChange={(e) => setDesc(e.target.value)} />
+                        </div>
+                    </div>
+                    <div className="field">
+                        <label className="label">备注</label>
+                        <div className="control">
+                            <input type="text" className="input" placeholder="请输入备注" value={remark} onChange={(e) => setRemark(e.target.value)} />
+                        </div>
+                    </div>
+
+                </div >
+            </section>
+            <footer className="modal-card-foot">
+                <button className="button is-success" onClick={() => handleComfirm()}>添加</button>
+                <button className="button" type="reset" onClick={() => dispatch(setActiveModalContent(undefined))}>取消</button>
+            </footer>
+        </div>
     );
 }
 
-export { CreateTagFormComp, CreateTagFormDialog }
+export { CreateTagFormDialog }

@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./reducers";
 import { Home } from "./containers/Home";
-import { Login, Register } from "./containers/Authentication";
+// import { Login, Register } from "./containers/Authentication";
 import "bulma/css/bulma.css"
 
 function App() {
@@ -12,8 +12,8 @@ function App() {
       < BrowserRouter >
         <Routes>
           <Route path='*' element={< Home />} />
-          <Route path='login' element={<Login />} />
-          <Route path='register' element={<Register />} />
+          {/* <Route path='login' element={<Login />} /> */}
+          {/* <Route path='register' element={<Register />} /> */}
         </Routes>
       </BrowserRouter >
     </Provider >
