@@ -4,8 +4,15 @@ import { store } from "./reducers";
 import { Home } from "./containers/Home";
 // import { Login, Register } from "./containers/Authentication";
 import "bulma/css/bulma.css"
+import { useEffect } from "react";
+import { setup_app } from "./utils/backend";
 
 function App() {
+  useEffect(() => {
+    setup_app().then((e) => {
+      console.log(e);
+    })
+  }, []);
   return (
     <Provider store={store} >
 

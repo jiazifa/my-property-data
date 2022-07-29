@@ -1,5 +1,8 @@
-import { IModalContentModel, useAppDispatch } from "../../reducers";
+import { useEffect } from "react";
+import { IModalContentModel, useAppDispatch, useAppSelector } from "../../reducers";
 import { setActiveModalContent } from "../../reducers/app";
+import { Account, selectAccounts, updateAccounts } from "../../reducers/user";
+import { load_all_user } from "../../utils/backend";
 import { CreateAccountFormDialog } from "./AddDialog";
 
 const header = [
@@ -24,29 +27,6 @@ const header = [
         title: "电话"
     },
 ]
-const rows: any[] = [
-    {
-        id: 1,
-        name: "测试1",
-        gender: 1,
-        email: "2333@qq.com",
-        phone: "18344445555",
-    },
-    {
-        id: 2,
-        name: "测试1",
-        gender: 1,
-        email: "2333@qq.com",
-        phone: "182"
-    },
-    {
-        id: 3,
-        name: "测试1",
-        gender: 1,
-        email: "2333@qq.com",
-        phone: "182"
-    }
-];
 
 const removeAction = (item: any) => {
 
@@ -57,14 +37,23 @@ const editAction = (item: any) => { };
 function AccountBoard() {
 
     const dispatch = useAppDispatch();
+    useEffect(() => {
+        load_all_user()
+            .then((r) => r as Array<Account>)
+            .then((users) => dispatch(updateAccounts(users)))
+            .catch((e) => console.log(`${JSON.stringify(e)}`));
+    }, []);
+    const accounts = useAppSelector(selectAccounts);
+
     const headerContainer = header.map((h) => (<th key={h.key}><abbr title={h.key}>{h.title}</abbr></th>));
-    const rowContainer = rows.map((r) => (
+    const rowContainer = accounts.map((r) => (
         <tr
             key={r.id}>
             <th>{r.id}</th>
-            <td>{r.title}</td>
-            <td>{r.desc}</td>
-            <td>{r.remark}</td>
+            <td>{r.name}</td>
+            <td>{r.gender === 1 ? "女" : "男"}</td>
+            <td>{r.email}</td>
+            <td>{r.phone}</td>
         </tr>
     ));
     const addModal: IModalContentModel = {

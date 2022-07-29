@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::{DBConnection, Result};
 
 // 用户表
-#[derive(Debug, Clone, PartialEq, Deserialize, DeriveEntityModel)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, DeriveEntityModel)]
 #[sea_orm(table_name = "user")]
 pub struct Model {
     #[sea_orm(primary_key)]
@@ -46,6 +46,15 @@ impl FindUserById {
 impl FindUserById {
     pub async fn execute(self, db: &DBConnection) -> Result<Option<Model>> {
         let result = Entity::find_by_id(self.0).one(db).await?;
+        return Ok(result);
+    }
+}
+
+pub struct FindAllUsers();
+
+impl FindAllUsers {
+    pub async fn execute(db: &DBConnection) -> Result<Vec<Model>> {
+        let result = Entity::find().all(db).await?;
         return Ok(result);
     }
 }

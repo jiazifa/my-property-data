@@ -1,40 +1,52 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from ".";
 
-export declare interface IUserState {
-  username: string; // 用户姓名
-  icon: string | URL; // 用户头像
-  email: string; // 用户邮箱
+enum Gender {
+  Male = 1,
+  Female = 2,
 }
 
-const initialState: IUserState = {
-  username: "",
-  icon: "",
-  email: "",
+export declare interface Account {
+  id: number;
+  identifier: string;
+  name: string;
+  gender: Gender;
+  email: string;
+  phone: string;
+  create_at: string;
+}
+
+export declare interface IUserCoordinatorState {
+  accounts: Array<Account>;
+}
+
+const initialState: IUserCoordinatorState = {
+  accounts: [],
 };
 
 export const userSlice = createSlice({
-  name: "user",
+  name: "userCoordinator",
   initialState: initialState,
   reducers: {
-    updateIcon: (state: IUserState, action: PayloadAction<URL>) => {
-      state.icon = action.payload;
+    updateAccounts: (
+      state: IUserCoordinatorState,
+      action: PayloadAction<Array<Account>>
+    ) => {
+      state.accounts = action.payload;
     },
-
-    updateEmail: (state: IUserState, action: PayloadAction<string>) => {
-      state.email = action.payload;
-    },
-
-    updateUserName: (state: IUserState, action: PayloadAction<string>) => {
-      state.username = action.payload;
+    addAccount: (
+      state: IUserCoordinatorState,
+      action: PayloadAction<Account>
+    ) => {
+      state.accounts = [action.payload, ...state.accounts];
     },
   },
 });
 
-export const { updateEmail, updateUserName, updateIcon } = userSlice.actions;
+export const { updateAccounts, addAccount } = userSlice.actions;
 
-const selectAppName = (state: RootState) => state.app.name;
+const selectAccounts = (state: RootState) => state.user.accounts;
 
-export { selectAppName };
+export { selectAccounts };
 
 export default userSlice.reducer;
