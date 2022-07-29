@@ -45,7 +45,7 @@ export const userSlice = createSlice({
 
 export const { updateAccounts, addAccount } = userSlice.actions;
 
-const selectAccounts = (state: RootState) => state.user.accounts;
+const selectAccounts = (state: RootState) => state.userCoordinator.accounts;
 
 export { selectAccounts };
 

@@ -1,22 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import React from "react";
 import { RootState } from ".";
-
-export declare interface IModalContent {
-  content: React.ReactNode;
-}
+import PropertyReactNodeManager from "../utils/propertyReactNodeManager";
 
 export declare interface IAppState {
   name: string;
   isMenuCollapsed: boolean; // 是否收起侧边栏
   selectedSideBarKey: string;
-  activeModalContent?: IModalContent;
+  isModalActive: boolean;
 }
 
 const initValue: IAppState = {
   name: "my-property-data",
   isMenuCollapsed: true,
   selectedSideBarKey: "dashboard",
+  isModalActive: false,
 };
 
 export const appSlice = createSlice({
@@ -33,11 +31,12 @@ export const appSlice = createSlice({
     setSelectedSideBar: (state: IAppState, action: PayloadAction<string>) => {
       state.selectedSideBarKey = action.payload;
     },
-    setActiveModalContent: (
-      state: IAppState,
-      action: PayloadAction<IModalContent | undefined>
-    ) => {
-      state.activeModalContent = action.payload;
+    makeModalContentVisible: (state: IAppState) => {
+      state.isModalActive = true;
+    },
+    makeModalContentDisable: (state: IAppState) => {
+      PropertyReactNodeManager.getManager().modalNode = undefined;
+      state.isModalActive = false;
     },
   },
   name: "app",
@@ -47,15 +46,15 @@ const selectIsMenuCollapsed = (state: RootState) => state.app.isMenuCollapsed;
 
 const selectedSideBar = (state: RootState) => state.app.selectedSideBarKey;
 
-const selectedActiveModalContent = (state: RootState) =>
-  state.app.activeModalContent;
+const isModalActive = (state: RootState) => state.app.isModalActive;
 
 export const {
   toggleMenuCollapsed,
   setMenuCollapsed,
   setSelectedSideBar,
-  setActiveModalContent,
+  makeModalContentVisible,
+  makeModalContentDisable,
 } = appSlice.actions;
-export { selectIsMenuCollapsed, selectedSideBar, selectedActiveModalContent };
+export { selectIsMenuCollapsed, selectedSideBar, isModalActive };
 
 export default appSlice.reducer;

@@ -1,10 +1,10 @@
 use sea_orm::{entity::prelude::*, ActiveValue};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{DBConnection, Result};
 
 // 预算表
-#[derive(Debug, Clone, PartialEq, Deserialize, DeriveEntityModel)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, DeriveEntityModel)]
 #[sea_orm(table_name = "budget")]
 pub struct Model {
     #[sea_orm(primary_key)]
@@ -30,6 +30,7 @@ pub enum Relation {
 
 impl ActiveModelBehavior for ActiveModel {}
 
+#[derive(Debug)]
 pub struct InsertBudget {
     pub title: String,
     pub moneny: i32,
@@ -124,6 +125,30 @@ impl FindBudget {
 impl FindBudget {
     pub async fn execute(self, db: &DBConnection) -> Result<Option<Model>> {
         let budget = Entity::find_by_id(self.0).one(db).await?;
+        return Ok(budget);
+    }
+}
+pub struct FindAllBudget();
+
+impl FindAllBudget {
+    pub async fn execute(db: &DBConnection) -> Result<Vec<Model>> {
+        let budget = Entity::find().all(db).await?;
+        return Ok(budget);
+    }
+}
+pub struct FindBudgetByTime(DateTimeLocal);
+
+impl FindBudgetByTime {
+    pub fn new(time: DateTimeLocal) -> Self {
+        Self(time)
+    }
+
+    pub async fn execute(self, db: &DBConnection) -> Result<Vec<Model>> {
+        let budget = Entity::find()
+            .filter(Column::LimitStartTime.lt(self.0))
+            .filter(Column::LimitEndTime.gt(self.0))
+            .all(db)
+            .await?;
         return Ok(budget);
     }
 }

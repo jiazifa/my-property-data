@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAppDispatch } from "../../reducers";
-import { setActiveModalContent } from "../../reducers/app";
+import { makeModalContentDisable } from "../../reducers/app";
 import { Account, addAccount } from "../../reducers/user";
 import { add_user } from "../../utils/backend";
 
@@ -14,23 +14,18 @@ function CreateAccountFormDialog() {
     const [phone, setPhone] = useState<string>("");
 
     const handleComfirm = () => {
-        var payload = {
-            name: name,
-            gender: gender,
-            email: email,
-            phone: phone,
-        }
         add_user(name, gender, email, phone)
             .then((u) => u as Account)
             .then((u) => dispatch(addAccount(u)))
             .catch((e) => console.log(`${JSON.stringify(e)}`))
+            .finally(() => dispatch(makeModalContentDisable()))
     };
 
     return (
         <div className="modal-card">
             <header className="modal-card-head">
                 <p className="modal-card-title">添加成员</p>
-                <button className="delete" aria-label="close" onClick={() => dispatch(setActiveModalContent(undefined))}></button>
+                <button className="delete" aria-label="close" onClick={() => dispatch(makeModalContentDisable())}></button>
             </header>
             <section className="modal-card-body">
                 <div className="container">
@@ -70,7 +65,7 @@ function CreateAccountFormDialog() {
             </section>
             <footer className="modal-card-foot">
                 <button className="button is-success" onClick={() => handleComfirm()}>添加</button>
-                <button className="button" type="reset" onClick={() => dispatch(setActiveModalContent(undefined))}>取消</button>
+                <button className="button" type="reset" onClick={() => dispatch(makeModalContentDisable())}>取消</button>
             </footer>
         </div>
     );

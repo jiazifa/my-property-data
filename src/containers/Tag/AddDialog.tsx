@@ -1,7 +1,8 @@
-import React, { useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { useAppDispatch } from "../../reducers";
-import { setActiveModalContent } from "../../reducers/app";
+import { makeModalContentDisable } from "../../reducers/app";
+import { addTag, TagMeta } from "../../reducers/tag";
+import { add_tag } from "../../utils/backend";
 
 
 function CreateTagFormDialog() {
@@ -12,19 +13,18 @@ function CreateTagFormDialog() {
     const [remark, setRemark] = useState<string>("");
 
     const handleComfirm = () => {
-        var payload = {
-            title: title,
-            desc: desc,
-            remark: remark
-        }
-        console.log(`${JSON.stringify(payload)}`);
+        add_tag(title, desc, remark)
+            .then((r) => r as TagMeta)
+            .then((tag) => dispatch(addTag(tag)))
+            .catch(e => console.log(`${JSON.stringify(e)}`))
+            .finally(() => dispatch(makeModalContentDisable()))
     };
 
     return (
         <div className="modal-card">
             <header className="modal-card-head">
                 <p className="modal-card-title">添加标签</p>
-                <button className="delete" aria-label="close" onClick={() => dispatch(setActiveModalContent(undefined))}></button>
+                <button className="delete" aria-label="close" onClick={() => dispatch(makeModalContentDisable())}></button>
             </header>
             <section className="modal-card-body">
                 <div className="container">
@@ -51,7 +51,7 @@ function CreateTagFormDialog() {
             </section>
             <footer className="modal-card-foot">
                 <button className="button is-success" onClick={() => handleComfirm()}>添加</button>
-                <button className="button" type="reset" onClick={() => dispatch(setActiveModalContent(undefined))}>取消</button>
+                <button className="button" type="reset" onClick={() => dispatch(makeModalContentDisable())}>取消</button>
             </footer>
         </div>
     );

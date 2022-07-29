@@ -1,5 +1,6 @@
-import { IModalContentModel, useAppDispatch } from "../../reducers";
-import { setActiveModalContent } from "../../reducers/app";
+import { useAppDispatch } from "../../reducers";
+import { makeModalContentVisible } from "../../reducers/app";
+import PropertyReactNodeManager from "../../utils/propertyReactNodeManager";
 import { CreateFlowFormDialog } from "./AddFlow";
 
 const rows: any[] = [
@@ -70,15 +71,16 @@ function FlowBoard() {
             <td>{r.remark}</td>
         </tr>
     ));
-    const addModal: IModalContentModel = {
-        content: <CreateFlowFormDialog />
-    };
+
     return (
         <div>
             <div className="mt-4 container level is-max-desktop">
                 <div className="level-left"></div>
                 <div className="level-right">
-                    <button className="button" onClick={() => dispatch(setActiveModalContent(addModal))}>
+                    <button className="button" onClick={() => {
+                        PropertyReactNodeManager.getManager().modalNode = (<CreateFlowFormDialog />);
+                        dispatch(makeModalContentVisible());
+                    }}>
                         <span>添加</span>
                     </button>
                 </div>

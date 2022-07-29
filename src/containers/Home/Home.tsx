@@ -2,20 +2,21 @@ import { useRef } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Navigation } from "../../components/Navigation";
 import { useAppSelector } from "../../reducers";
-import { selectedActiveModalContent } from "../../reducers/app";
+import { isModalActive } from "../../reducers/app";
 import DashBoard from "../DashBoard";
 import { AccountBoard } from "../Account";
 import { TagBoard } from "../Tag";
 import { BudgetBoard } from "../Budget";
 import { FlowBoard } from "../Flow";
+import PropertyReactNodeManager from "../../utils/propertyReactNodeManager";
 
 
 const Home = () => {
     const NavigationContainer = Navigation(true);
     const domRef = useRef<HTMLInputElement>(null);
-    const modalContent = useAppSelector(selectedActiveModalContent);
+    const isModalVisible = useAppSelector(isModalActive);
 
-    if (modalContent === undefined) {
+    if (isModalVisible === false) {
         domRef.current?.classList.remove("is-active");
     } else {
         domRef.current?.classList.add("is-active");
@@ -33,7 +34,7 @@ const Home = () => {
             <div className={"modal"} ref={domRef}>
                 <div className="modal-background"></div>
                 <div>
-                    {modalContent?.content}
+                    {PropertyReactNodeManager.getManager().modalNode}
                 </div>
             </div>
         </div >

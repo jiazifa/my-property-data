@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { IModalContentModel, useAppDispatch, useAppSelector } from "../../reducers";
-import { setActiveModalContent } from "../../reducers/app";
+import { useAppDispatch, useAppSelector } from "../../reducers";
+import { makeModalContentVisible } from "../../reducers/app";
 import { Account, selectAccounts, updateAccounts } from "../../reducers/user";
 import { load_all_user } from "../../utils/backend";
+import PropertyReactNodeManager from "../../utils/propertyReactNodeManager";
 import { CreateAccountFormDialog } from "./AddDialog";
 
 const header = [
@@ -56,15 +57,15 @@ function AccountBoard() {
             <td>{r.phone}</td>
         </tr>
     ));
-    const addModal: IModalContentModel = {
-        content: <CreateAccountFormDialog />
-    };
     return (
         <div>
             <div className="mt-4 container level is-max-desktop">
                 <div className="level-left"></div>
                 <div className="level-right">
-                    <button className="button" onClick={() => dispatch(setActiveModalContent(addModal))}>
+                    <button className="button" onClick={() => {
+                        PropertyReactNodeManager.getManager().modalNode = (<CreateAccountFormDialog />);
+                        dispatch(makeModalContentVisible());
+                    }}>
                         <span>添加</span>
                     </button>
                 </div>

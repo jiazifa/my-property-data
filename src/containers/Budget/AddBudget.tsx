@@ -1,29 +1,31 @@
+import moment from "moment";
 import { useState } from "react";
 import { useAppDispatch } from "../../reducers";
-import { setActiveModalContent } from "../../reducers/app";
+import { makeModalContentDisable } from "../../reducers/app";
+import { BudgetMeta } from "../../reducers/budget";
+import { add_budget } from "../../utils/backend";
 
 function CreateBudgetFormDialog() {
     const dispatch = useAppDispatch();
-    const [title, setTitle] = useState<string>("");
+    const [title, setTitle] = useState<string>("test");
     const [date, setDate] = useState<Date>(new Date());
-    const [money, setMoneny] = useState(0);
-    const [remark, setRemark] = useState<string>("");
+    const [money, setMoneny] = useState(110);
+    const [remark, setRemark] = useState<string>("test remark");
 
     const handleComfirm = () => {
-        var payload = {
-            title: title,
-            date: date,
-            moneny: money,
-            remark: remark
-        }
-        console.log(`${JSON.stringify(payload)}`);
+        const start = moment().startOf("month").valueOf();
+        const end = moment().endOf("month").valueOf();
+        add_budget(title, money, remark, start, end)
+            .then((r) => r as BudgetMeta)
+            .catch(e => console.log(`${JSON.stringify(e)}`))
+            .finally(() => dispatch(makeModalContentDisable()));
     };
 
     return (
         <div className="modal-card">
             <header className="modal-card-head">
                 <p className="modal-card-title">添加预算</p>
-                <button className="delete" aria-label="close" onClick={() => dispatch(setActiveModalContent(undefined))}></button>
+                <button className="delete" aria-label="close" onClick={() => dispatch(makeModalContentDisable())}></button>
             </header>
             <section className="modal-card-body">
                 <div className="container">
@@ -51,7 +53,7 @@ function CreateBudgetFormDialog() {
             </section>
             <footer className="modal-card-foot">
                 <button className="button is-success" onClick={() => handleComfirm()}>添加</button>
-                <button className="button" type="reset" onClick={() => dispatch(setActiveModalContent(undefined))}>取消</button>
+                <button className="button" type="reset" onClick={() => dispatch(makeModalContentDisable())}>取消</button>
             </footer>
         </div>
     );
