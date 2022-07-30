@@ -1,5 +1,5 @@
 #![cfg_attr(
-    all(not(debug_assertions), target_os = "window&&s"),
+    all(not(debug_assertions), target_os = "window&s"),
     windows_subsystem = "windows"
 )]
 
@@ -7,11 +7,9 @@ mod budget_command;
 mod tag_command;
 mod user_command;
 
-use entity::{
-    tag::Model as TagMeta,
-    user::{Gender, Model as UserMeta},
-    DBConnection, Database,
-};
+use std::str::FromStr;
+
+use entity::Database;
 use migration::{Migrator, MigratorTrait};
 use tauri::Manager;
 
@@ -23,12 +21,28 @@ async fn setup_app(app: tauri::AppHandle) -> Result<String, String> {
     if path.exists() == false {
         {
             if let Ok(_) = rusqlite::Connection::open(path.clone()) {
+                println!("创建数据库成功");
             } else {
-                println!("创建数据路失败");
+                println!("创建数据库失败");
             }
         }
     }
-    let uri = format!("sqlite://{}", path.as_path().to_str().unwrap());
+    let mut uri = String::new();
+    if cfg!(target_os = "windows") {
+        uri = format!("{}", path.to_string_lossy());
+        let match_str = "\\\\?\\";
+        if uri.starts_with(match_str) {
+            if let Some(pref) = uri.strip_prefix(match_str) {
+                uri = String::from_str(pref).unwrap();
+            } else {
+                uri = uri.replace(match_str, "");
+            }
+            uri = format!("sqlite:///{}", &uri);
+        }
+    } else {
+        uri = format!("sqlite://{}", path.as_path().to_str().unwrap());
+    }
+    println!("准备连接数据库: {}", &uri);
     if let Ok(db) = Database::connect(uri).await {
         let _ = Migrator::up(&db, None).await;
         app.manage(db);
